@@ -1,0 +1,37 @@
+{
+  "name": "ethereum-rig-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for Ethereum RIG research: EIP-1559, Blobs, and MEV analytics powered by Dune",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "ethereum-rig-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "start": "node dist/index.js",
+    "dev": "tsc && node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ethereum",
+    "eip-1559",
+    "mev",
+    "blobs",
+    "dune",
+    "mcp",
+    "research"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}
