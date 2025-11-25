@@ -1,11 +1,11 @@
 {
-  "name": "ethereum-rig-mcp",
+  "name": "ethereum-dune-mcp",
   "version": "0.1.0",
-  "description": "MCP server for Ethereum RIG research: EIP-1559, Blobs, and MEV analytics powered by Dune",
+  "description": "MCP server for Ethereum analytics: EIP-1559, Blobs, and MEV data powered by Dune Analytics",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "ethereum-rig-mcp": "./dist/index.js"
+    "ethereum-dune-mcp": "./dist/index.js"
   },
   "scripts": {
     "build": "tsc",
