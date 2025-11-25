@@ -1,12 +1,225 @@
-# 如何配置 Dune Query IDs
+# How to Configure Dune Query IDs / 如何配置 Dune Query IDs
+
+[English](#english) | [中文](#chinese)
+
+---
+
+<a name="english"></a>
+## English
+
+## Integrated Top Dashboards
+
+We've integrated configuration information from three top-tier Dune dashboards:
+
+### 1️⃣ EIP-1559 / ETH Burned
+**Dashboards**: 
+- https://dune.com/msilb7/EIP1559-Base-Fee-x-Tip-by-Block
+- https://ultrasound.money (powered by Dune)
+
+**Queries to Configure**:
+- `baseFeeHistory` - Base Fee historical data
+- `burnedEthDaily` - Daily burned ETH
+- `burnedEthTotal` - Total burn statistics
+- `priorityFeeStats` - Priority Fee statistics
+
+### 2️⃣ Blob (EIP-4844) Analysis
+**Dashboards**: 
+- https://dune.com/glxyresearch_team/eip-4844-blobs
+- https://dune.com/0xRob/blobs
+- https://dune.com/ephema/eip-4844-the-impact-of-blobs
+
+**Queries to Configure**:
+- `dailyStats` - Daily blob statistics
+- `blobGasPrice` - Blob gas price
+- `blobUsageByL2` - L2 usage
+- `blobTransactions` - Blob transaction count
+
+### 3️⃣ MEV-Boost Analysis
+**Dashboards**: 
+- https://dune.com/ChainsightAnalytics/mev-after-ethereum-merge
+- https://dune.com/CometShock/mev-boost-builder-stats
+- https://dune.com/lsquared/mev-boost-detailed
+
+**Pre-configured Queries** ✅:
+- `builderStats`: **1279809** - Builder statistics (ready to use)
+- `builderLifetime`: **1298718** - Builder lifetime statistics (ready to use)
+
+**Queries to Configure**:
+- `mevBoostStats` - Daily MEV-Boost statistics
+- `relayStats` - Relay statistics
+- `searcherActivity` - Searcher activity
+- `mevTrends` - MEV trends
+
+## 📖 How to Get Query IDs - Detailed Steps
+
+### Method 1: Through Dashboard (Recommended)
+
+1. **Visit a Dashboard**
+   ```
+   Example: https://dune.com/glxyresearch_team/eip-4844-blobs
+   ```
+
+2. **Browse Charts on the Page**
+   - Find the data chart you want (e.g., "Daily Blob Count")
+
+3. **Click the Chart**
+   - In the top-right corner of the chart, you'll see several icons
+   - Click **"View Query"** or **"⋮" (three dots) → "View Query"**
+
+4. **Get the Query ID**
+   - Browser will navigate to the query page
+   - URL format: `https://dune.com/queries/123456/xyz`
+   - **123456** is the Query ID!
+
+5. **Copy the Query ID**
+   - Note down this number
+
+### Method 2: Through Search
+
+1. **Visit Dune Browse Page**
+   ```
+   https://dune.com/browse/queries
+   ```
+
+2. **Search Keywords**
+   - EIP-1559: Search "base fee", "eth burned", "priority fee"
+   - Blobs: Search "blob", "EIP-4844", "blob gas"
+   - MEV: Search "MEV-Boost", "builder", "searcher"
+
+3. **View Search Results**
+   - Click on relevant-looking queries
+   - Check query data quality and update frequency
+
+4. **Get the Query ID**
+   - From the URL: `https://dune.com/queries/123456`
+
+## 🔧 Fill in the Configuration File
+
+Edit file: `src/utils/queryConfig.ts`
+
+```typescript
+export const DUNE_QUERIES = {
+  eip1559: {
+    baseFeeHistory: 123456,    // ← Fill in your Query ID here
+    burnedEthDaily: 234567,    // ← Fill in your Query ID here
+    burnedEthTotal: 345678,    // ← Fill in your Query ID here
+    priorityFeeStats: 456789,  // ← Fill in your Query ID here
+    feeMarketAnalysis: 567890, // ← Fill in your Query ID here
+  },
+
+  blobs: {
+    dailyStats: 111111,        // ← Fill in your Query ID here
+    blobGasPrice: 222222,      // ← Fill in your Query ID here
+    blobUsageByL2: 333333,     // ← Fill in your Query ID here
+    blobTransactions: 444444,  // ← Fill in your Query ID here
+  },
+
+  mev: {
+    mevBoostStats: 555555,     // ← Fill in your Query ID here
+    builderStats: 1279809,     // ✅ Pre-configured
+    builderLifetime: 1298718,  // ✅ Pre-configured
+    relayStats: 666666,        // ← Fill in your Query ID here
+    searcherActivity: 777777,  // ← Fill in your Query ID here
+    mevTrends: 888888,         // ← Fill in your Query ID here
+  },
+};
+```
+
+## 💡 Recommended Specific Queries
+
+Based on these three dashboards, here are some recommended query names (you need to find them in the dashboards):
+
+### EIP-1559 Related
+- **"Base Fee by Block"** - Base fee per block
+- **"ETH Burned Daily"** - Daily burn amount
+- **"Total ETH Burned"** - Total burned amount
+- **"Priority Fee Distribution"** - Priority fee distribution
+
+### Blob Related
+- **"Blob Count Daily"** - Daily blob count
+- **"Blob Base Fee"** - Blob base fee
+- **"Blobs by L2"** - Blob usage by L2
+- **"Blob Transaction Count"** - Blob transaction count
+
+### MEV Related
+- **"MEV-Boost Daily Stats"** - Daily MEV-Boost statistics
+- **"Builder Market Share"** - Builder market share
+- **"Relay Performance"** - Relay performance
+- **"Top Searchers"** - Top searchers
+- **"MEV Trends"** - MEV trend analysis
+
+## ⚙️ After Configuration
+
+1. **Rebuild the Project**
+   ```bash
+   cd /absolute/path/to/ethereum-dune-mcp
+   npm run build
+   ```
+
+2. **Restart Claude Desktop**
+   - Configuration will take effect
+
+3. **Test Tools**
+   Try in Claude Desktop:
+   ```
+   Use the get_builder_stats tool to view builder statistics for the past 7 days
+   ```
+
+## 🎯 Priority Recommendations
+
+If time is limited, configure in this priority order:
+
+**High Priority** (Most Valuable):
+1. ✅ `builderStats` - Pre-configured
+2. ✅ `builderLifetime` - Pre-configured
+3. `burnedEthTotal` - Total ETH burned
+4. `blobUsageByL2` - L2 blob usage
+
+**Medium Priority** (Very Useful):
+5. `mevBoostStats` - MEV-Boost statistics
+6. `blobGasPrice` - Blob gas price
+7. `baseFeeHistory` - Base fee history
+
+**Low Priority** (Supplementary Data):
+8. All other queries
+
+## 🆘 Troubleshooting
+
+### Can't Find Suitable Query?
+- Try forking a similar query and modifying it
+- Ask for help in Dune Discord community
+- Use `custom_dune_query` tool to execute any query ID
+
+### Query Returns Error?
+- Check if Query ID is correct
+- Confirm query is public (not private)
+- Check if your Dune API key is valid
+
+### Data Too Old?
+- Find more actively maintained queries
+- Fork the query and update it yourself
+- Use recently updated dashboards
+
+## 📚 Related Resources
+
+- **Dune Documentation**: https://dune.com/docs
+- **Dune API Documentation**: https://docs.dune.com/api-reference
+- **Dune Discord**: https://discord.gg/dunecom
+- **Query Examples**: See `QUERY_ID_EXAMPLES.md` in the project
+
+---
+
+<a name="chinese"></a>
+## 中文
 
 ## 已整合的三大 Dashboard
 
 我已经为你整合了以下三个顶级 Dune dashboards 的配置信息：
 
 ### 1️⃣ EIP-1559 / ETH Burned
-**Dashboard**: https://dune.com/msilb7/EIP1559-Base-Fee-x-Tip-by-Block
-**Dashboard**: https://ultrasound.money (数据由 Dune 支持)
+**Dashboard**: 
+- https://dune.com/msilb7/EIP1559-Base-Fee-x-Tip-by-Block
+- https://ultrasound.money (数据由 Dune 支持)
 
 **需要配置的查询**：
 - `baseFeeHistory` - Base Fee 历史数据
@@ -15,9 +228,10 @@
 - `priorityFeeStats` - Priority Fee 统计
 
 ### 2️⃣ Blob (EIP-4844) 分析
-**Dashboard**: https://dune.com/glxyresearch_team/eip-4844-blobs
-**Dashboard**: https://dune.com/0xRob/blobs
-**Dashboard**: https://dune.com/ephema/eip-4844-the-impact-of-blobs
+**Dashboard**: 
+- https://dune.com/glxyresearch_team/eip-4844-blobs
+- https://dune.com/0xRob/blobs
+- https://dune.com/ephema/eip-4844-the-impact-of-blobs
 
 **需要配置的查询**：
 - `dailyStats` - 每日 blob 统计
@@ -26,9 +240,10 @@
 - `blobTransactions` - Blob 交易数
 
 ### 3️⃣ MEV-Boost 分析
-**Dashboard**: https://dune.com/ChainsightAnalytics/mev-after-ethereum-merge
-**Dashboard**: https://dune.com/CometShock/mev-boost-builder-stats
-**Dashboard**: https://dune.com/lsquared/mev-boost-detailed
+**Dashboard**: 
+- https://dune.com/ChainsightAnalytics/mev-after-ethereum-merge
+- https://dune.com/CometShock/mev-boost-builder-stats
+- https://dune.com/lsquared/mev-boost-detailed
 
 **已配置的查询** ✅：
 - `builderStats`: **1279809** - Builder 统计（已可用）
@@ -142,15 +357,15 @@ export const DUNE_QUERIES = {
 
 1. **重新构建项目**
    ```bash
-   cd /Users/fengsheng_1/ethereum-rig-mcp
+   cd /绝对路径/ethereum-dune-mcp
    npm run build
    ```
 
-2. **重启 Claude Code**
+2. **重启 Claude Desktop**
    - 配置才会生效
 
 3. **测试工具**
-   在 Claude Code 中尝试：
+   在 Claude Desktop 中尝试：
    ```
    使用 get_builder_stats 工具查看最近 7 天的 builder 统计
    ```

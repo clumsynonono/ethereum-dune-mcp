@@ -75,7 +75,7 @@
 ## 📁 项目结构
 
 ```
-ethereum-rig-mcp/
+ethereum-dune-mcp/
 ├── src/
 │   ├── index.ts                    # ✅ MCP 服务器主入口
 │   ├── types/index.ts              # ✅ 类型定义
