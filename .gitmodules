@@ -1,0 +1,3 @@
+[submodule "mario/base_arb_bot/contracts/lib/forge-std"]
+	path = mario/base_arb_bot/contracts/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
