@@ -1,99 +1,96 @@
 /**
- * Dune Query IDs Configuration
- *
- * 已配置的查询来自知名的 Dune dashboards：
- * - ultrasound.money / msilb7 (EIP-1559)
- * - glxyresearch_team / 0xRob (Blobs)
- * - ChainsightAnalytics / CometShock (MEV-Boost)
- *
- * 如何添加更多查询：
- * 1. 访问 https://dune.com/browse/dashboards
- * 2. 搜索相关主题
- * 3. 打开图表，点击 "View Query"
- * 4. 从 URL 获取 query ID: https://dune.com/queries/12345 -> ID 是 12345
+ * Dune Query IDs - RIG Research MCP
+ * 所有查询默认只获取缓存结果（免费），不消耗 API 额度
  */
 
-export const DUNE_QUERIES = {
-  // EIP-1559 Related Queries
-  // Dashboard: https://dune.com/msilb7/EIP1559-Base-Fee-x-Tip-by-Block
-  // Dashboard: https://dune.com/ultrasoundmoney
-  eip1559: {
-    baseFeeHistory: 0, // 推荐: 访问 dune.com/msilb7/EIP1559-Base-Fee-x-Tip-by-Block
-    burnedEthDaily: 0, // 推荐: ultrasound.money dashboard 上的 daily burn 查询
-    burnedEthTotal: 0, // 推荐: ultrasound.money dashboard 上的 total burn 查询
-    priorityFeeStats: 0, // 推荐: msilb7 的 tip statistics 查询
-    feeMarketAnalysis: 0, // 推荐: 综合 fee market 分析查询
-  },
-
-  // Blob (EIP-4844) Related Queries
-  // Dashboard: https://dune.com/glxyresearch_team/eip-4844-blobs
-  // Dashboard: https://dune.com/0xRob/blobs
-  // Dashboard: https://dune.com/ephema/eip-4844-the-impact-of-blobs
-  blobs: {
-    dailyStats: 0, // 推荐: glxyresearch_team 的 blob daily stats
-    blobGasPrice: 0, // 推荐: 0xRob 的 blob gas price 查询
-    blobUsageByL2: 0, // 推荐: ephema 的 L2 blob usage 查询
-    blobTransactions: 0, // 推荐: glxyresearch_team 的 blob tx count 查询
-  },
-
-  // MEV Related Queries
-  // Dashboard: https://dune.com/ChainsightAnalytics/mev-after-ethereum-merge
-  // Dashboard: https://dune.com/CometShock/mev-boost-builder-stats
-  // Dashboard: https://dune.com/lsquared/mev-boost-detailed
-  mev: {
-    mevBoostStats: 0, // 推荐: ChainsightAnalytics 的 MEV-Boost daily stats
-    builderStats: 1279809, // ✅ MEV-Boost Builder Stats (已配置)
-    builderLifetime: 1298718, // ✅ MEV-Boost Builder Lifetime Stats (已配置)
-    relayStats: 0, // 推荐: ChainsightAnalytics 的 relay statistics
-    searcherActivity: 0, // 推荐: flashbots 的 searcher activity 查询
-    mevTrends: 0, // 推荐: lsquared 的 MEV trends 查询
-  },
+// ===== Blob Analytics (hildobby/blobs) =====
+export const BLOB_QUERIES = {
+  totalFees: 4104427,      // Blob 总费用
+  dataInflow: 4077661,     // 每链每天数据流入 (MB)
+  storageSize: 4077761,    // 累计存储 + Pruned
+  chainRatio: 4780618,     // 各链占比
+  baseFee: 3591214,        // CL Blob Base Fee
+  recent24h: 5072258,      // 24h 提交监控
+  fullness: 5124588,       // 填充效率
 };
 
-/**
- * Recommended Dune Dashboards to explore:
- *
- * EIP-1559:
- * - Ultra Sound Money: https://dune.com/ultrasoundmoney
- * - ETH Burned: https://dune.com/hildobby/eth-burned
- *
- * Blobs (EIP-4844):
- * - Blob Analysis: https://dune.com/ethereum_study/blobs
- * - L2 Blob Usage: https://dune.com/cryptokoryo/blobs
- *
- * MEV:
- * - MEV-Boost: https://dune.com/ChainsightAnalytics/mev-boost
- * - MEV Overview: https://dune.com/flashbots/mev-overview
- * - Builder Analytics: https://dune.com/hildobby/ethereum-builders
- */
+// ===== DEX Metrics (hagaetc/dex-metrics) =====
+export const DEX_QUERIES = {
+  volume24h: 4234,         // 24h 交易量
+  volume7d: 4235,          // 7d 交易量
+  ethShare: 21693,         // ETH 在 EVM DEX 份额
+  weeklyByChain: 2180075,  // 各链每周交易量
+  rankedDex: 4319,         // DEX 排名
+  frontendShare: 3364122,  // Frontend 市场份额
+  botUsage: 2687239,       // Bot 使用量
+};
 
-export function isQueryConfigured(queryId: number): boolean {
-  return queryId !== 0;
-}
+// ===== Staking (hildobby/eth2-staking) =====
+export const STAKING_QUERIES = {
+  ethStaked: 1933035,      // 全网质押量
+  validators: 1933036,     // 验证者数量
+  stakersByEntity: 3383110,// 机构集中度
+  ethUnstaked: 2393992,    // 退出量
+  fullWithdrawals: 2394053,// 完整退出
+  deltaWeek: 1945604,      // Δ 质押 (周)
+  deltaMonth: 1945549,     // Δ 质押 (月)
+  delta6M: 1945623,        // Δ 质押 (6月)
+  liquidStaking: 1941374,  // Liquid Staking
+  liquidRestaking: 3548849,// Liquid Restaking
+};
 
-export function getQueryDescription(category: string, queryName: string): string {
-  const descriptions: Record<string, Record<string, string>> = {
-    eip1559: {
-      baseFeeHistory: 'Historical base fee data per block',
-      burnedEthDaily: 'Daily ETH burned through EIP-1559',
-      burnedEthTotal: 'Total ETH burned statistics',
-      priorityFeeStats: 'Priority fee (tip) statistics',
-      feeMarketAnalysis: 'Overall fee market analysis',
-    },
-    blobs: {
-      dailyStats: 'Daily blob transaction statistics',
-      blobGasPrice: 'Blob gas price trends',
-      blobUsageByL2: 'Blob usage breakdown by L2',
-      blobTransactions: 'Blob transaction counts',
-    },
-    mev: {
-      mevBoostStats: 'MEV-Boost block statistics',
-      builderStats: 'Block builder market share and stats',
-      relayStats: 'MEV relay statistics',
-      searcherActivity: 'Top MEV searcher activity',
-      mevTrends: 'MEV extraction trends',
-    },
+// ===== Ethereum Metrics =====
+export const ETH_QUERIES = {
+  blockBuilders: 5090511,  // Builder 市场份额
+  gasFees: 3195150,        // Gas 费用
+  medianGas: 651463,       // Median Gas Price
+  ethBurned: 3186349,      // ETH 燃烧量
+  activeAddresses: 651474, // 活跃地址
+  txCount: 651398,         // 交易数量
+  ethPrice: 663019,        // ETH 价格
+};
+
+// ===== MEV Blocker =====
+export const MEV_QUERIES = {
+  totalRebates: 2456432,   // 总返还
+  rebatesByBuilder: 2771596,// Builder 返还
+  rebatesBySearcher: 2771602,// Searcher 返还
+  waitTimes: 2441895,      // 等待时间
+  volumeProtected: 2635139,// 保护交易量
+  successRate: 2441649,    // 成功率
+};
+
+// ===== BuilderNet =====
+export const BUILDERNET_QUERIES = {
+  main: 4341814,           // Revenue/Bundles/Blocks/Operators
+  gasRefunds: 4378423,     // Total/Recipients/Max Refund
+  monthlyRefunds: 4378475, // Monthly Refund Chart
+  publicKeys: 4258012,     // Public Keys / Operators
+};
+
+// ===== L2 MEV (Atomic Arb & Sandwich) =====
+export const L2MEV_QUERIES = {
+  // Atomic Arbitrage
+  atomicArbByChain: 3416651,    // Volume by Chain (1Y)
+  atomicArbTradeCount: 3416499, // Trade Count
+  atomicArbCumulative: 3416882, // Cumulative Volume
+  atomicArb1M: 3635408,         // 1 Month Stats
+  // Sandwich
+  sandwichCumulative: 3601907,  // Cumulative Volume
+  sandwichTradeCount: 3601836,  // Trade Count by Chain
+  // Base MEV Bot
+  baseMevBotExtracted: 3688247, // Extracted Value
+  baseMevBotDaily: 4628919,     // Daily Summary
+};
+
+export function getAllQueries() {
+  return {
+    blob: Object.entries(BLOB_QUERIES).map(([name, id]) => ({ name, id })),
+    dex: Object.entries(DEX_QUERIES).map(([name, id]) => ({ name, id })),
+    staking: Object.entries(STAKING_QUERIES).map(([name, id]) => ({ name, id })),
+    ethereum: Object.entries(ETH_QUERIES).map(([name, id]) => ({ name, id })),
+    mev: Object.entries(MEV_QUERIES).map(([name, id]) => ({ name, id })),
+    buildernet: Object.entries(BUILDERNET_QUERIES).map(([name, id]) => ({ name, id })),
+    l2mev: Object.entries(L2MEV_QUERIES).map(([name, id]) => ({ name, id })),
   };
-
-  return descriptions[category]?.[queryName] || 'No description available';
 }
