@@ -17,7 +17,33 @@ export class DuneClient {
   }
 
   /**
-   * Execute a Dune query by ID
+   * Get cached results only (does NOT consume API credits)
+   * This fetches results from the last execution by the query owner
+   */
+  async getCachedResults(queryId: number, limit?: number): Promise<any[]> {
+    try {
+      const params: Record<string, any> = {};
+      if (limit) params.limit = limit;
+
+      const response = await this.client.get<DuneQueryResult>(
+        `/query/${queryId}/results`,
+        { params }
+      );
+
+      if (response.data.result && response.data.result.rows.length > 0) {
+        return response.data.result.rows;
+      }
+      throw new Error('No cached results available');
+    } catch (error: any) {
+      if (error.response?.data?.error) {
+        throw new Error(error.response.data.error);
+      }
+      throw new Error(`Failed to get cached results: ${error.message}`);
+    }
+  }
+
+  /**
+   * Execute a Dune query by ID (CONSUMES API CREDITS)
    */
   async executeQuery(queryId: number, parameters?: Record<string, any>): Promise<string> {
     try {
@@ -46,7 +72,7 @@ export class DuneClient {
   }
 
   /**
-   * Get query results
+   * Get query results by execution ID
    */
   async getExecutionResults(executionId: string): Promise<DuneQueryResult> {
     try {
@@ -60,30 +86,16 @@ export class DuneClient {
   }
 
   /**
-   * Get latest results from a query (without executing)
-   */
-  async getLatestResults(queryId: number): Promise<DuneQueryResult> {
-    try {
-      const response = await this.client.get<DuneQueryResult>(
-        `/query/${queryId}/results`
-      );
-      return response.data;
-    } catch (error: any) {
-      throw new Error(`Failed to get latest results for query ${queryId}: ${error.message}`);
-    }
-  }
-
-  /**
-   * Execute query and wait for results (with polling)
+   * Execute query and wait for results (CONSUMES API CREDITS)
    */
   async executeAndWait(
     queryId: number,
     parameters?: Record<string, any>,
-    maxWaitTime: number = 180000 // 3 minutes
+    maxWaitTime: number = 180000
   ): Promise<DuneQueryResult> {
     const executionId = await this.executeQuery(queryId, parameters);
     const startTime = Date.now();
-    const pollInterval = 2000; // 2 seconds
+    const pollInterval = 2000;
 
     while (Date.now() - startTime < maxWaitTime) {
       const status = await this.getExecutionStatus(executionId);
@@ -91,33 +103,20 @@ export class DuneClient {
       if (status.state === 'QUERY_STATE_COMPLETED') {
         return await this.getExecutionResults(executionId);
       } else if (status.state === 'QUERY_STATE_FAILED') {
-        throw new Error(`Query execution failed`);
+        throw new Error('Query execution failed');
       }
 
-      // Wait before polling again
-      await new Promise(resolve => setTimeout(resolve, pollInterval));
+      await new Promise((resolve) => setTimeout(resolve, pollInterval));
     }
 
     throw new Error('Query execution timeout');
   }
 
   /**
-   * Helper method to get results (tries latest first, executes if needed)
+   * Default method: Get cached results only
+   * Use executeAndWait() if you need fresh data (will consume credits)
    */
-  async getResults(queryId: number, parameters?: Record<string, any>): Promise<any[]> {
-    try {
-      // Try to get latest cached results first (faster, saves API quota)
-      const latestResults = await this.getLatestResults(queryId);
-      if (latestResults.result && latestResults.result.rows.length > 0) {
-        return latestResults.result.rows;
-      }
-    } catch (error) {
-      // If latest results fail, execute the query
-      console.error('Latest results not available, executing query...');
-    }
-
-    // Execute query and wait for results
-    const result = await this.executeAndWait(queryId, parameters);
-    return result.result?.rows || [];
+  async getResults(queryId: number, options?: { limit?: number }): Promise<any[]> {
+    return this.getCachedResults(queryId, options?.limit);
   }
 }
